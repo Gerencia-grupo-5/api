@@ -1,5 +1,5 @@
 import { Elysia, t } from 'elysia';
-import { getAllIngredients } from '../services/IngredientService';
+import { createIngredient, deleteIngredient, getAllIngredients, getOneIngredient, updateIngredient } from '../services/IngredientService';
 import { generateResponse, ResponseDTO } from '../utils/response';
 import { IngredientDTO } from '../lib/schemas/Ingredient';
 
@@ -17,13 +17,45 @@ export function ingredientRoute(app: Elysia){
                 t.Array(IngredientDTO)
             )
         })
-        .get("/:id", (context) => {
-
+        .get("/:id", async (context) => {
+            try {
+                return generateResponse(200, await getOneIngredient(context.params.id), "", context);
+            } catch (e) {
+                return generateResponse(500, null, e, context);
+            }
+        }, {
+            params: t.Object({ id: t.String() }),
+            response: ResponseDTO(IngredientDTO)
         })
-        .post("/", (context) =>  {
+        .post("/", async (context) =>  {
+            try {
+                return generateResponse(201, await createIngredient(context.body), "", context);
+            } catch (e) {
+                return generateResponse(500, null, e, context);
+            };
+        }, {
+            body: IngredientDTO,
+            response: ResponseDTO(t.String())
         })
-        .put("/:id", (context) => {
+        .put("/:id", async (context) => {
+            try {
+                return generateResponse(204, await updateIngredient(context.params.id, context.body), "", context);
+            } catch (e) {
+                return generateResponse(500, null, e, context);
+            }
+        }, {
+            body: IngredientDTO,
+            response: ResponseDTO(t.Boolean()),
+            params: t.Object({ id: t.String() })
         })
-        .delete(":id", (context) => {
+        .delete(":id", async (context) => {
+            try {
+                return generateResponse(200, await deleteIngredient(context.params.id), "", context);
+            } catch (e) {
+                return generateResponse(500, null, e, context);
+            }
+        }, {
+            response: ResponseDTO(t.Boolean()),
+            params: t.Object({ id: t.String() })
         });
 };
