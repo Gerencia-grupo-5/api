@@ -3,5 +3,7 @@ import { getAllIngredients } from '../services/IngredientService';
 
 export function ingredientRoute(app: Elysia){
     return app
-        .get("/", getAllIngredients);
+        .get("/", (context) => {
+            return getAllIngredients(context);
+        });
 };
