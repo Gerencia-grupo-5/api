@@ -15,7 +15,7 @@ const app = new Elysia()
   .use(swagger())
   .group('/ingredients', ingredientRoute)
   .use(qrRoute)
-  //.use(productoRoutes)
+  .use(productoRoutes)
   .listen(3000);
 
 console.log(
