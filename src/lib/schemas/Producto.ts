@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import { Ingredient } from './Ingredient';
 
 const ProductoSchema = new Schema({
   nombre: { type: String, required: true },
