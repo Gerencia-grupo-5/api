@@ -20,14 +20,17 @@ export const qrRoute = new Elysia().get('/qr', async ({ query }) => {
           return new Response('Producto no encontrado', { status: 404 })
       }
 
-      const qrData = `
-          Producto: ${producto.nombre}
-          Empresa: ${producto.empresa}
-          Precio: $${producto.precio}
-          Vencimiento: ${producto.vencimiento.toISOString().split('T')[0]}
-          Ingredientes:
-          ${producto.ingredientes.map((ing: any) => ` - ${ing.name} (${ing.country})`).join('\n')}
-      `
+      const qrData = [
+        `🛒 Producto: ${producto.nombre}`,
+        `🏢 Empresa: ${producto.empresa}`,
+        `💲 Precio: $${producto.precio.toFixed(2)}`,
+        `📅 Vencimiento: ${producto.vencimiento.toISOString().split('T')[0]}`,
+        ``,
+        `🧾 Ingredientes:`,
+        ...producto.ingredientes.map((ing: any) =>
+            `  - ${ing.name} (${ing.country}) [📍 ${ing.latitude}, ${ing.longitude}]`
+        )
+        ].join('\n')
 
       const buffer = await QRCode.toBuffer(qrData)
 
