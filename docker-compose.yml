@@ -3,9 +3,6 @@ version: '3.8'
 services:
   elysia:
     build: .
+    env_file: ".env"
     ports:
-      - "3500:3000"
-    volumes:
-      - .:/app
-      - /app/node_modules
-    restart: always
+      - "3000:3000"

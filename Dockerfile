@@ -1,11 +1,33 @@
-FROM oven/bun
+FROM oven/bun AS build
 
 WORKDIR /app
 
-COPY . .
+# Cache packages installation
+COPY package.json package.json
+COPY bun.lockb bun.lockb
 
 RUN bun install
 
-EXPOSE 3000
+COPY ./src ./src
 
-CMD ["bun", "run", "--watch", "src/index.ts"]
+ENV NODE_ENV=production
+
+RUN bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--target bun \
+	--outfile server \
+	./src/index.ts
+
+FROM gcr.io/distroless/base
+
+WORKDIR /app
+
+COPY --from=build /app/server server
+
+ENV NODE_ENV=production
+
+CMD ["./server"]
+
+EXPOSE 3000
